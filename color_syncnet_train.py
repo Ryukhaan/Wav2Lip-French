@@ -89,12 +89,14 @@ class Dataset(object):
                 y = torch.zeros(1).float()
                 chosen = wrong_img_name
 
+            print"Get Window B"
             window_fnames = self.get_window(chosen)
             if window_fnames is None:
                 continue
 
             window = []
             all_read = True
+            print("Fname B")
             for fname in window_fnames:
                 img = cv2.imread(fname)
                 if img is None:

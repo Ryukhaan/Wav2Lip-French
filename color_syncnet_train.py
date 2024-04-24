@@ -2,6 +2,7 @@ from os.path import dirname, join, basename, isfile
 from tqdm import tqdm
 
 from models import SyncNet_color as SyncNet
+from models import SyncNet_color_Lora as SyncNetLora
 import audio
 
 import torch
@@ -18,10 +19,11 @@ from hparams import hparams, get_image_list
 
 parser = argparse.ArgumentParser(description='Code to train the expert lip-sync discriminator')
 
-parser.add_argument("--data_root", help="Root folder of the preprocessed LRS2 dataset", required=True)
+parser.add_argument("--data_root", help="Root folder of the preprocessed dataset", required=True)
 
 parser.add_argument('--checkpoint_dir', help='Save checkpoints to this directory', required=True, type=str)
 parser.add_argument('--checkpoint_path', help='Resumed from this checkpoint', default=None, type=str)
+parser.add_argument('--checkpoint_backbone', help="Resumed only the backbone", default=None, type=str)
 
 args = parser.parse_args()
 
@@ -264,7 +266,10 @@ if __name__ == "__main__":
     device = torch.device("cuda" if use_cuda else "cpu")
 
     # Model
-    model = SyncNet().to(device)
+    model = SyncNetLora().to(device)
+    if args.checkpoint_backbone is not None:
+        model._load_backbone(args.checkpoint_backbone, use_cuda=use_cuda)
+
     print('total trainable params {}'.format(sum(p.numel() for p in model.parameters() if p.requires_grad)))
 
     optimizer = optim.Adam([p for p in model.parameters() if p.requires_grad],

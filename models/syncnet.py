@@ -70,10 +70,11 @@ class SyncNet_color(nn.Module):
         return audio_embedding, face_embedding
 
 class SyncNet_color_Lora(nn.Module):
-    def __init__(self, r=16, lora_alpha=16, dropout=0.1):
+    def __init__(self, path, r=16, lora_alpha=16, dropout=0.1, use_cuda=True):
         super(SyncNet_color_Lora, self).__init__()
 
         self.backbone = SyncNet_color()
+        self._load_backbone(path, use_cuda=use_cuda)
         self.config = LoraConfig(
             r=r,
             lora_alpha=lora_alpha,

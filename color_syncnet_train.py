@@ -160,6 +160,7 @@ def train(device, model, train_data_loader, test_data_loader, optimizer,
 
             mel = mel.to(device)
 
+            print(x.shape, mel.shape)
             a, v = model(mel, x)
             y = y.to(device)
 

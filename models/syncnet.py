@@ -7,7 +7,6 @@ from .conv import Conv2d
 import os
 from peft import LoraConfig, get_peft_model, LoraModel
 
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
 class SyncNet_color(nn.Module):
     def __init__(self):
         super(SyncNet_color, self).__init__()
@@ -75,6 +74,7 @@ class SyncNet_color_Lora(nn.Module):
 
         self.backbone = SyncNet_color()
         self._load_backbone(path, use_cuda=use_cuda)
+        os.environ["CUDA_VISIBLE_DEVICES"] = "0"
         self.config = LoraConfig(
             r=r,
             lora_alpha=lora_alpha,

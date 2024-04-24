@@ -69,6 +69,8 @@ class SyncNet_color(nn.Module):
 
 class SyncNet_color_Lora(nn.Module):
     def __init__(self, r=16, lora_alpha=16, dropout=0.1):
+        super(SyncNet_color_Lora, self).__init__()
+
         self.backbone = SyncNet_color()
         self.config = LoraConfig(
             r=r,

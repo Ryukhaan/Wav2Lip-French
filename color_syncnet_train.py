@@ -108,7 +108,10 @@ class Dataset(object):
 
                 window.append(img)
 
-            if not all_read: continue
+            if not all_read:
+                continue
+
+            print("Here")
 
             try:
                 wavpath = join(vidname, "audio.wav")
@@ -116,6 +119,7 @@ class Dataset(object):
 
                 orig_mel = audio.melspectrogram(wav).T
             except Exception as e:
+                print("Audio")
                 continue
 
             mel = self.crop_audio_window(orig_mel.copy(), img_name)

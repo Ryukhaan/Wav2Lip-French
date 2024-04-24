@@ -152,6 +152,7 @@ def train(device, model, train_data_loader, test_data_loader, optimizer,
         running_loss = 0.
         prog_bar = tqdm(enumerate(train_data_loader), position=0, leave=True)
         for step, (x, mel, y) in prog_bar:
+            if x.shape[0] != hparams.syncnet_batch_size: continue
             model.train()
             optimizer.zero_grad()
 
@@ -160,7 +161,7 @@ def train(device, model, train_data_loader, test_data_loader, optimizer,
 
             mel = mel.to(device)
 
-            print(x.shape, mel.shape)
+
             a, v = model(mel, x)
             y = y.to(device)
 

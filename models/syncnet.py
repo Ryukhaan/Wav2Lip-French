@@ -73,13 +73,13 @@ class SyncNet_color_Lora(nn.Module):
         super(SyncNet_color_Lora, self).__init__()
 
         self.backbone = SyncNet_color()
-        print([(n, type(m)) for n, m in self.backbone.named_modules()])
+        #print([(n, type(m)) for n, m in self.backbone.named_modules()])
         self._load_backbone(path, use_cuda=use_cuda)
         os.environ["CUDA_VISIBLE_DEVICES"] = "0"
         self.config = LoraConfig(
             r=r,
             lora_alpha=lora_alpha,
-            target_modules=["Conv2d"],
+            target_modules=["conv_block"],
             lora_dropout=dropout,
             bias="none",
         )

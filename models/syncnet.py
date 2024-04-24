@@ -5,7 +5,7 @@ from torch.nn import functional as F
 from .conv import Conv2d
 
 import os
-from peft import LoraConfig, get_peft_model
+from peft import LoraConfig, get_peft_model, LoraModel
 
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 class SyncNet_color(nn.Module):
@@ -70,11 +70,10 @@ class SyncNet_color(nn.Module):
         return audio_embedding, face_embedding
 
 class SyncNet_color_Lora(nn.Module):
-    def __init__(self, path, r=16, lora_alpha=16, dropout=0.1):
+    def __init__(self, r=16, lora_alpha=16, dropout=0.1):
         super(SyncNet_color_Lora, self).__init__()
 
         self.backbone = SyncNet_color()
-        self._load_backbone(checkpoint_path=path)
         self.config = LoraConfig(
             r=r,
             lora_alpha=lora_alpha,
@@ -82,7 +81,7 @@ class SyncNet_color_Lora(nn.Module):
             lora_dropout=dropout,
             bias="none",
         )
-        self.lora_model = get_peft_model(self.backbone, self.config)
+        self.lora_model = LoraModel(self.backbone, self.config, "default")
 
     def _load_backbone(self, checkpoint_path, use_cuda=True):
         print("Load checkpoint from: {}".format(checkpoint_path))

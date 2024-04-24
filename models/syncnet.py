@@ -79,7 +79,7 @@ class SyncNet_color_Lora(nn.Module):
         self.config = LoraConfig(
             r=r,
             lora_alpha=lora_alpha,
-            target_modules=["conv_block"],
+            target_modules=["Conv2d"],
             lora_dropout=dropout,
             bias="none",
         )

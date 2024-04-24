@@ -4,6 +4,8 @@ from torch.nn import functional as F
 
 from .conv import Conv2d
 
+from peft import LoraConfig, get_peft_model
+
 class SyncNet_color(nn.Module):
     def __init__(self):
         super(SyncNet_color, self).__init__()
@@ -62,5 +64,47 @@ class SyncNet_color(nn.Module):
         audio_embedding = F.normalize(audio_embedding, p=2, dim=1)
         face_embedding = F.normalize(face_embedding, p=2, dim=1)
 
+
+        return audio_embedding, face_embedding
+
+class SyncNet_color_Lora(nn.Module):
+    def __init__(self, r=16, lora_alpha=16, dropout=0.1):
+        self.backbone = SyncNet_color()
+        self.config = LoraConfig(
+            r=r,
+            lora_alpha=lora_alpha,
+            target_modules=["conv2d"],
+            lora_dropout=dropout,
+            bias="none",
+        )
+        self.lora_model = get_peft_model(self.backbone, self.config)
+
+    def _load_backbone(self, checkpoint_path, use_cuda=True):
+        print("Load checkpoint from: {}".format(checkpoint_path))
+        if use_cuda:
+            checkpoint = torch.load(checkpoint_path)
+        else:
+            checkpoint = torch.load(checkpoint_path,
+                                    map_location=lambda storage, loc: storage)
+        self.backbone.load_state_dict(checkpoint["state_dict"])
+
+    def _load_model(self, checkpoint_path, use_cuda=True):
+        print("Load checkpoint from: {}".format(checkpoint_path))
+        if use_cuda:
+            checkpoint = torch.load(checkpoint_path)
+        else:
+            checkpoint = torch.load(checkpoint_path,
+                                    map_location=lambda storage, loc: storage)
+        self.lora_model.load_state_dict(checkpoint["state_dict"])
+
+    def forward(self, audio_sequences, face_sequences): # audio_sequences := (B, dim, T)
+        face_embedding = self.lora_model.face_encoder(face_sequences)
+        audio_embedding = self.lora_model.audio_encoder(audio_sequences)
+
+        audio_embedding = audio_embedding.view(audio_embedding.size(0), -1)
+        face_embedding = face_embedding.view(face_embedding.size(0), -1)
+
+        audio_embedding = F.normalize(audio_embedding, p=2, dim=1)
+        face_embedding = F.normalize(face_embedding, p=2, dim=1)
 
         return audio_embedding, face_embedding

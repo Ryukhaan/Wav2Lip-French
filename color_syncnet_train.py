@@ -131,7 +131,7 @@ class Dataset(object):
 
             x = torch.FloatTensor(x)
             mel = torch.FloatTensor(mel.T).unsqueeze(0)
-
+            print("Done")
             return x, mel, y
 
 logloss = nn.BCELoss()

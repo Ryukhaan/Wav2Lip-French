@@ -5,7 +5,7 @@ from torch.nn import functional as F
 from .conv import Conv2d
 
 import os
-from peft import LoraConfig, get_peft_model, add_adapter
+from peft import LoraConfig, get_peft_model
 
 class SyncNet_color(nn.Module):
     def __init__(self):

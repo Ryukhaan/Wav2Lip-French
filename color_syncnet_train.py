@@ -90,14 +90,12 @@ class Dataset(object):
                 y = torch.zeros(1).float()
                 chosen = wrong_img_name
 
-            print("Get Window B")
             window_fnames = self.get_window(chosen)
             if window_fnames is None:
                 continue
 
             window = []
             all_read = True
-            print("Fname B")
             for fname in window_fnames:
                 img = cv2.imread(fname)
                 if img is None:
@@ -114,15 +112,12 @@ class Dataset(object):
             if not all_read:
                 continue
 
-            print("Here")
-
             try:
                 wavpath = join(vidname, "audio.wav")
                 wav = audio.load_wav(wavpath, hparams.sample_rate)
 
                 orig_mel = audio.melspectrogram(wav).T
             except Exception as e:
-                print("Audio")
                 continue
 
             mel = self.crop_audio_window(orig_mel.copy(), img_name)

@@ -117,6 +117,7 @@ class Dataset(object):
 
                 orig_mel = audio.melspectrogram(wav).T
             except Exception as e:
+                print(vidname)
                 continue
 
             mel = self.crop_audio_window(orig_mel.copy(), img_name)
@@ -131,7 +132,6 @@ class Dataset(object):
 
             x = torch.FloatTensor(x)
             mel = torch.FloatTensor(mel.T).unsqueeze(0)
-            print("Done")
             return x, mel, y
 
 logloss = nn.BCELoss()

@@ -26,7 +26,7 @@ parser.add_argument('--ngpu', help='Number of GPUs across which to run in parall
 parser.add_argument('--batch_size', help='Single GPU Face detection batch size', default=32, type=int)
 parser.add_argument("--data_root", help="Root folder of the LRS2 dataset", required=True)
 parser.add_argument("--preprocessed_root", help="Root folder of the preprocessed dataset", required=True)
-parser.add_argument("--no_videos", type=bool, default=False, action_store=True)
+parser.add_argument("--no_videos", type=bool, default=False, action='store_true')
 
 args = parser.parse_args()
 

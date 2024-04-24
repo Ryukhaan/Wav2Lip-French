@@ -16,6 +16,7 @@ from glob import glob
 
 import os, random, cv2, argparse
 from hparams import hparams, get_image_list
+from sklearn.model_selection import train_test_split
 
 parser = argparse.ArgumentParser(description='Code to train the expert lip-sync discriminator')
 
@@ -38,7 +39,7 @@ syncnet_mel_step_size = 16
 
 class Dataset(object):
     def __init__(self, split):
-        self.all_videos = get_image_list(args.data_root, split)
+        self.all_videos = split #get_image_list(args.data_root, split)
 
     def get_frame_id(self, frame):
         return int(basename(frame).split('.')[0])
@@ -249,11 +250,18 @@ if __name__ == "__main__":
     checkpoint_dir = args.checkpoint_dir
     checkpoint_path = args.checkpoint_path
 
-    if not os.path.exists(checkpoint_dir): os.mkdir(checkpoint_dir)
+    if not os.path.exists(checkpoint_dir):
+        os.mkdir(checkpoint_dir)
 
     # Dataset and Dataloader setup
-    train_dataset = Dataset('train')
-    test_dataset = Dataset('val')
+    # train_dataset = Dataset('train')
+    # test_dataset = Dataset('val')
+
+    filenames = get_image_list(args.data_root, 'train')
+    seed = 0
+    train_list, val_list = train_test_split(np.array(filenames), random_state=seed, train_size=0.8, test_size=0.2)
+    train_dataset = Dataset(train_list)
+    test_dataset = Dataset(val_list)
 
     train_data_loader = data_utils.DataLoader(
         train_dataset, batch_size=hparams.syncnet_batch_size, shuffle=True,

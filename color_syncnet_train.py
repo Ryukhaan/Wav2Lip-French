@@ -275,10 +275,11 @@ if __name__ == "__main__":
 
     device = torch.device("cuda" if use_cuda else "cpu")
 
-    # Model
-    model = SyncNetLora(args.checkpoint_backbone, use_cuda=use_cuda, device=device)
-    #if args.checkpoint_backbone is not None:
-    #    model._load_backbone(args.checkpoint_backbone, use_cuda=use_cuda)
+    # Model Lora Mode
+    #model = SyncNetLora(args.checkpoint_backbone, use_cuda=use_cuda, device=device)
+
+    # Standard model
+    model = SyncNet()
     model = model.to(device)
     print('total trainable params {}'.format(sum(p.numel() for p in model.parameters() if p.requires_grad)))
 

@@ -26,6 +26,7 @@ parser.add_argument('--ngpu', help='Number of GPUs across which to run in parall
 parser.add_argument('--batch_size', help='Single GPU Face detection batch size', default=32, type=int)
 parser.add_argument("--data_root", help="Root folder of the LRS2 dataset", required=True)
 parser.add_argument("--preprocessed_root", help="Root folder of the preprocessed dataset", required=True)
+parser.add_argument("--no_videos", type=bool, default=False)
 
 args = parser.parse_args()
 
@@ -92,11 +93,11 @@ def main(args):
 	print('Started processing for {} with {} GPUs'.format(args.data_root, args.ngpu))
 
 	filelist = glob(path.join(args.data_root, '*/*.mp4'))
-
-	jobs = [(vfile, args, i%args.ngpu) for i, vfile in enumerate(filelist)]
-	p = ThreadPoolExecutor(args.ngpu)
-	futures = [p.submit(mp_handler, j) for j in jobs]
-	_ = [r.result() for r in tqdm(as_completed(futures), total=len(futures))]
+	if not args.no_videos:
+		jobs = [(vfile, args, i%args.ngpu) for i, vfile in enumerate(filelist)]
+		p = ThreadPoolExecutor(args.ngpu)
+		futures = [p.submit(mp_handler, j) for j in jobs]
+		_ = [r.result() for r in tqdm(as_completed(futures), total=len(futures))]
 
 	print('Dumping audios...')
 

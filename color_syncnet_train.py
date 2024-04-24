@@ -40,6 +40,7 @@ syncnet_mel_step_size = 16
 class Dataset(object):
     def __init__(self, split):
         self.all_videos = split #get_image_list(args.data_root, split)
+        print(self.all_videos)
 
     def get_frame_id(self, frame):
         return int(basename(frame).split('.')[0])

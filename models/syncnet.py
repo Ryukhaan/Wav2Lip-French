@@ -5,7 +5,7 @@ from torch.nn import functional as F
 from .conv import Conv2d
 
 import os
-from peft import LoraConfig, get_peft_model, LoraModel
+from peft import LoraConfig, get_peft_model, add_adapter
 
 class SyncNet_color(nn.Module):
     def __init__(self):
@@ -73,6 +73,7 @@ class SyncNet_color_Lora(nn.Module):
         super(SyncNet_color_Lora, self).__init__()
 
         self.backbone = SyncNet_color()
+        print([(n, type(m)) for n, m in self.backbone.named_modules()])
         self._load_backbone(path, use_cuda=use_cuda)
         os.environ["CUDA_VISIBLE_DEVICES"] = "0"
         self.config = LoraConfig(

@@ -76,8 +76,7 @@ class SyncNet_color_Lora(nn.Module):
         #print([(n, type(m)) for n, m in self.backbone.named_modules()])
         self._load_backbone(path, use_cuda=use_cuda)
         self.backbone = self.backbone.to(device)
-        os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-        os.environ["BITSANDBYTES_NOWELCOME"] = "1"
+
         self.config = LoraConfig(
             r=r,
             lora_alpha=lora_alpha,
@@ -85,7 +84,8 @@ class SyncNet_color_Lora(nn.Module):
             lora_dropout=dropout,
             bias="none",
         )
-        self.lora_model = get_peft_model(self.backbone, self.config)
+        self.lora_model = get_peft_model(SyncNet_color().to(device), self.config)
+        self.lora_model.print_trainable_parameters()
 
     def _load_backbone(self, checkpoint_path, use_cuda=True):
         print("Load checkpoint from: {}".format(checkpoint_path))

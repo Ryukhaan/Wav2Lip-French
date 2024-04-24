@@ -89,7 +89,7 @@ class Dataset(object):
                 y = torch.zeros(1).float()
                 chosen = wrong_img_name
 
-            print"Get Window B"
+            print("Get Window B")
             window_fnames = self.get_window(chosen)
             if window_fnames is None:
                 continue

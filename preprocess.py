@@ -38,7 +38,13 @@ template = 'ffmpeg -loglevel panic -y -i {} -strict -2 {}'
 
 def process_video_file(vfile, args, gpu_id):
 	video_stream = cv2.VideoCapture(vfile)
-	
+
+	vidname = os.path.basename(vfile).split('.')[0]
+	dirname = vfile.split('/')[-2]
+	fulldir = path.join(args.preprocessed_root, dirname, vidname)
+
+	os.makedirs(fulldir, exist_ok=True)
+
 	frames = []
 	while 1:
 		still_reading, frame = video_stream.read()
@@ -46,12 +52,7 @@ def process_video_file(vfile, args, gpu_id):
 			video_stream.release()
 			break
 		frames.append(frame)
-	
-	vidname = os.path.basename(vfile).split('.')[0]
-	dirname = vfile.split('/')[-2]
 
-	fulldir = path.join(args.preprocessed_root, dirname, vidname)
-	os.makedirs(fulldir, exist_ok=True)
 
 	batches = [frames[i:i + args.batch_size] for i in range(0, len(frames), args.batch_size)]
 
@@ -65,6 +66,8 @@ def process_video_file(vfile, args, gpu_id):
 				continue
 
 			x1, y1, x2, y2 = f
+			if os.path.isfile(path.join(fulldir, '{}.jpg'.format(i))):
+				return
 			cv2.imwrite(path.join(fulldir, '{}.jpg'.format(i)), fb[j][y1:y2, x1:x2])
 
 def process_audio_file(vfile, args):

@@ -82,7 +82,7 @@ class SyncNet_color_Lora(nn.Module):
             lora_dropout=dropout,
             bias="none",
         )
-        self.lora_model = LoraModel(self.backbone, self.config)
+        self.lora_model = get_peft_model(self.backbone, self.config)
 
     def _load_backbone(self, checkpoint_path, use_cuda=True):
         print("Load checkpoint from: {}".format(checkpoint_path))

@@ -76,6 +76,7 @@ class SyncNet_color_Lora(nn.Module):
         #print([(n, type(m)) for n, m in self.backbone.named_modules()])
         self._load_backbone(path, use_cuda=use_cuda)
         os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+        os.environ["BITSANDBYTES_NOWELCOME"] = "1"
         self.config = LoraConfig(
             r=r,
             lora_alpha=lora_alpha,

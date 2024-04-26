@@ -148,7 +148,7 @@ def train(device, model, train_data_loader, test_data_loader, optimizer,
     resumed_step = global_step
     
     while global_epoch < nepochs:
-        print('Starting Epoch: {}'.format(global_epoch))
+        #print('Starting Epoch: {}'.format(global_epoch))
         running_loss = 0.
         prog_bar = tqdm(enumerate(train_data_loader), position=0, leave=True)
         for step, (x, mel, y) in prog_bar:
@@ -181,7 +181,7 @@ def train(device, model, train_data_loader, test_data_loader, optimizer,
                 with torch.no_grad():
                     eval_model(test_data_loader, global_step, device, model, checkpoint_dir)
 
-            prog_bar.set_description('Loss: {}'.format(running_loss / (step + 1)))
+            prog_bar.set_description('GS {} Loss: {}'.format(global_step, running_loss / (step + 1)))
 
         global_epoch += 1
 
@@ -264,6 +264,7 @@ if __name__ == "__main__":
     filenames = get_image_list(args.data_root, 'train')
     seed = 0
     train_list, val_list = train_test_split(np.array(filenames), random_state=seed, train_size=0.8, test_size=0.2)
+    print(train_list)
     train_dataset = Dataset(train_list)
     test_dataset = Dataset(val_list)
 

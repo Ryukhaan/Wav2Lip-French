@@ -43,6 +43,8 @@ def process_video_file(vfile, args, gpu_id):
 	dirname = vfile.split('/')[-2]
 	fulldir = path.join(args.preprocessed_root, dirname, vidname)
 
+	if os.path.isfile(os.path.join(fulldir, "0.jpg")):
+		return
 	os.makedirs(fulldir, exist_ok=True)
 
 	frames = []
@@ -66,8 +68,6 @@ def process_video_file(vfile, args, gpu_id):
 				continue
 
 			x1, y1, x2, y2 = f
-			if os.path.isfile(path.join(fulldir, '{}.jpg'.format(i))):
-				return
 			cv2.imwrite(path.join(fulldir, '{}.jpg'.format(i)), fb[j][y1:y2, x1:x2])
 
 def process_audio_file(vfile, args):

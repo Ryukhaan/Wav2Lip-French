@@ -277,7 +277,8 @@ if __name__ == "__main__":
         num_workers=8)
 
     device = torch.device("cuda" if use_cuda else "cpu")
-
+    print(device)
+    exit()
     # Model Lora Mode
     #model = SyncNetLora(args.checkpoint_backbone, use_cuda=use_cuda, device=device)
 

@@ -276,9 +276,8 @@ if __name__ == "__main__":
         test_dataset, batch_size=hparams.syncnet_batch_size,
         num_workers=8)
 
-    device = torch.device("cuda" if use_cuda else "cpu")
-    print(device)
-    exit()
+    device = torch.device("cuda:1" if use_cuda else "cpu")
+
     # Model Lora Mode
     #model = SyncNetLora(args.checkpoint_backbone, use_cuda=use_cuda, device=device)
 

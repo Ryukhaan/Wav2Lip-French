@@ -18,6 +18,8 @@ import os, random, cv2, argparse
 from hparams import hparams, get_image_list
 from sklearn.model_selection import train_test_split
 
+from torch.utils.tensorboard import SummaryWriter
+
 parser = argparse.ArgumentParser(description='Code to train the expert lip-sync discriminator')
 
 parser.add_argument("--data_root", help="Root folder of the preprocessed dataset", required=True)
@@ -141,6 +143,10 @@ def cosine_loss(a, v, y):
 
     return loss
 
+
+# Tensorboard writer
+writer = SummaryWriter('runs/french')
+
 def train(device, model, train_data_loader, test_data_loader, optimizer,
           checkpoint_dir=None, checkpoint_interval=None, nepochs=None):
 
@@ -173,6 +179,15 @@ def train(device, model, train_data_loader, test_data_loader, optimizer,
             cur_session_steps = global_step - resumed_step
             running_loss += loss.item()
 
+            if global_step % 50 == 0:
+                writer.add_images('input_x',
+                                  torch.cat([x for i in range(syncnet_T)], dim = 0)[:, [2, 1, 0]],
+                                    global_step = global_step
+                )
+                writer.add_images('input_mel',
+                                  torch.cat([mel for i in range(syncnet_T)], dim=0)[:, [2, 1, 0]],
+                                  global_step=global_step
+                                  )
             if global_step == 1 or global_step % checkpoint_interval == 0:
                 save_checkpoint(
                     model, optimizer, global_step, checkpoint_dir, global_epoch)
@@ -182,6 +197,10 @@ def train(device, model, train_data_loader, test_data_loader, optimizer,
                     eval_model(test_data_loader, global_step, device, model, checkpoint_dir)
 
             prog_bar.set_description('GS {} Loss: {}'.format(global_step, running_loss / (step + 1)))
+
+            # Monitoring with Tensorboard
+            writer.add_scalars('loss', { 'l1': running_loss / (step + 1)},
+                               global_step)
 
         global_epoch += 1
 

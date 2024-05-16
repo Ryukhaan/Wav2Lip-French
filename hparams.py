@@ -17,6 +17,7 @@ def get_image_list_from_directory(data_root):
 	for directory in os.listdir(data_root):
 		for subdir in os.listdir(os.path.join(data_root, directory)):
 			if os.path.isdir(os.path.join(data_root, directory, subdir)):
+				print(os.path.join(data_root, directory, subdir))
 				filelists.append(os.path.join(data_root, directory, subdir))
 
 class HParams:

@@ -180,13 +180,13 @@ def train(device, model, train_data_loader, test_data_loader, optimizer,
             running_loss += loss.item()
 
             if global_step % 50 == 0:
-                print(x.shape, mel.shape)
-                writer.add_images('input_x',
-                                  torch.cat([x for i in range(syncnet_T)], dim = 0)[:, [2, 1, 0]],
-                                    global_step = global_step
-                )
+                #print(x.shape, mel.shape)
+                #writer.add_images('input_x',
+                #                  torch.cat([x for i in range(syncnet_T)], dim = 0)[:, [2, 1, 0]],
+                #                    global_step = global_step
+                #)
                 writer.add_images('input_mel',
-                                  torch.cat([mel for i in range(syncnet_T)], dim=0)[:, [2, 1, 0]],
+                                  mel[:, [2, 1, 0]],
                                   global_step=global_step
                                   )
             if global_step == 1 or global_step % checkpoint_interval == 0:

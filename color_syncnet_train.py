@@ -179,16 +179,16 @@ def train(device, model, train_data_loader, test_data_loader, optimizer,
             cur_session_steps = global_step - resumed_step
             running_loss += loss.item()
 
-            if global_step % 50 == 0:
+            #if global_step % 50 == 0:
                 #print(x.shape, mel.shape)
                 #writer.add_images('input_x',
                 #                  torch.cat([x for i in range(syncnet_T)], dim = 0)[:, [2, 1, 0]],
                 #                    global_step = global_step
                 #)
-                writer.add_images('input_mel',
-                                  mel[:, [2, 1, 0]],
-                                  global_step=global_step
-                                  )
+                #writer.add_images('input_mel',
+                #                  mel[:, [2, 1, 0]],
+                #                  global_step=global_step
+                #                  )
             if global_step == 1 or global_step % checkpoint_interval == 0:
                 save_checkpoint(
                     model, optimizer, global_step, checkpoint_dir, global_epoch)

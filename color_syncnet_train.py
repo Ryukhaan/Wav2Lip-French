@@ -283,7 +283,7 @@ if __name__ == "__main__":
 
     filenames = get_image_list_from_directory(args.data_root) #get_image_list(args.data_root, 'train')
     seed = 0
-    train_list, val_list = train_test_split(np.array(filenames), random_state=seed, train_size=0.8, test_size=0.2)
+    train_list, val_list = train_test_split(filenames, random_state=seed, train_size=0.8, test_size=0.2)
     print(len(train_list), train_list[:5])
     train_dataset = Dataset(train_list)
     test_dataset = Dataset(val_list)

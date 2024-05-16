@@ -180,6 +180,7 @@ def train(device, model, train_data_loader, test_data_loader, optimizer,
             running_loss += loss.item()
 
             if global_step % 50 == 0:
+                print(x.shape, mel.shape)
                 writer.add_images('input_x',
                                   torch.cat([x for i in range(syncnet_T)], dim = 0)[:, [2, 1, 0]],
                                     global_step = global_step

@@ -15,7 +15,7 @@ def get_image_list(data_root, split):
 def get_image_list_from_directory(data_root):
 	filelists = []
 	for directory in os.listdir(data_root):
-		for subdir in os.listdir(directory):
+		for subdir in os.listdir(os.path.join(data_root, directory)):
 			filelists.append(os.path.join(data_root, directory, subdir))
 
 class HParams:

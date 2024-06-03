@@ -366,11 +366,15 @@ if __name__ == "__main__":
         
     load_checkpoint(args.syncnet_checkpoint_path, syncnet, None, reset_optimizer=True, overwrite_global_states=False)
 
+    # KAN MODEL
     kan_model = Wav2LipKan()
     kan_model.wavlip = model
-
     if not os.path.exists(checkpoint_dir):
         os.mkdir(checkpoint_dir)
+    for p in model.wavlip.parameters():
+        p.requires_grad = False
+    optimizer = optim.Adam([p for p in model.parameters() if p.requires_grad],
+                           lr=hparams.initial_learning_rate)
 
     # Train!
     train(device, kan_model, train_data_loader, test_data_loader, optimizer,

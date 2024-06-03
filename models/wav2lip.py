@@ -1,4 +1,5 @@
 import os
+import sys
 
 import torch
 from torch import nn
@@ -6,15 +7,8 @@ from torch.nn import functional as F
 import math
 
 from .conv import Conv2dTranspose, Conv2d, nonorm_Conv2d
-from ..kan import *
-
-import argparse
-parser = argparse.ArgumentParser(description='Code to train the expert lip-sync discriminator')
-parser.add_argument("--path", help="Root folder of the preprocessed dataset", required=True)
-parser.add_argument('--new_path', help='Save checkpoints to this directory', required=True, type=str)
-args = parser.parse_args()
-path = args.path
-new_path = args.new_path
+sys.path.append('pykan')
+from kan import *
 
 class Wav2LipKan(nn.Module):
     def __init__(self):

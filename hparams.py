@@ -12,7 +12,7 @@ def get_image_list(data_root, split):
 
 	for dir in os.listdir(data_root):
 		for subdir in os.listdir(dir):
-			filelist.remove(os.path.join(data_root, dir, subdir))
+			filelist.remove(os.path.join("/home/Rdecelle/data/", data_root, dir, subdir))
 	return filelist
 
 def get_image_list_from_directory(data_root):

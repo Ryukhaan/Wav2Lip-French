@@ -13,7 +13,7 @@ def get_image_list(data_root, split):
 	directory = os.path.join("/home/Rdecelle/data/", data_root)
 	for dir in os.listdir(directory):
 		for subdir in os.listdir(os.path.join(directory, dir)):
-			filelist.append(os.path.join("/home/Rdecelle/data/", data_root, dir, subdir))
+			filelist.append(os.path.join(data_root, dir, subdir))
 	return filelist
 
 def get_image_list_from_directory(data_root):

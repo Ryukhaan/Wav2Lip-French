@@ -371,7 +371,7 @@ if __name__ == "__main__":
         os.mkdir(checkpoint_dir)
     for p in kan_model.wavlip.parameters():
         p.requires_grad = False
-    optimizer = optim.Adam([p for p in model.parameters() if p.requires_grad],
+    optimizer = optim.Adam([p for p in kan_model.parameters() if p.requires_grad],
                            lr=hparams.initial_learning_rate)
     print('total trainable params {}'.format(sum(p.numel() for p in kan_model.parameters() if p.requires_grad)))
     # Train!

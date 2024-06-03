@@ -356,7 +356,6 @@ if __name__ == "__main__":
 
     # Wav2Lip Model
     model = Wav2Lip().to(device)
-    print('total trainable params {}'.format(sum(p.numel() for p in model.parameters() if p.requires_grad)))
     optimizer = optim.Adam([p for p in model.parameters() if p.requires_grad],
                            lr=hparams.initial_learning_rate)
 
@@ -374,7 +373,7 @@ if __name__ == "__main__":
         p.requires_grad = False
     optimizer = optim.Adam([p for p in model.parameters() if p.requires_grad],
                            lr=hparams.initial_learning_rate)
-
+    print('total trainable params {}'.format(sum(p.numel() for p in model.parameters() if p.requires_grad)))
     # Train!
     train(device, kan_model, train_data_loader, test_data_loader, optimizer,
               checkpoint_dir=checkpoint_dir,

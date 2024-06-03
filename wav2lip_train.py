@@ -3,6 +3,7 @@ from tqdm import tqdm
 
 from models import SyncNet_color as SyncNet
 from models import Wav2Lip as Wav2Lip
+from models import Wav2LipKan as Wav2LipKan
 import audio
 
 import torch
@@ -22,9 +23,11 @@ parser = argparse.ArgumentParser(description='Code to train the Wav2Lip model wi
 parser.add_argument("--data_root", help="Root folder of the preprocessed LRS2 dataset", required=True, type=str)
 
 parser.add_argument('--checkpoint_dir', help='Save checkpoints to this directory', required=True, type=str)
+
 parser.add_argument('--syncnet_checkpoint_path', help='Load the pre-trained Expert discriminator', required=True, type=str)
 
 parser.add_argument('--checkpoint_path', help='Resume from this checkpoint', default=None, type=str)
+parser.add_argument('--checkpoint_kan_path', help='Resume KAN from this checkpoint', default=None, type=str)
 
 args = parser.parse_args()
 
@@ -352,10 +355,9 @@ if __name__ == "__main__":
 
     device = torch.device("cuda" if use_cuda else "cpu")
 
-    # Model
+    # Wav2Lip Model
     model = Wav2Lip().to(device)
     print('total trainable params {}'.format(sum(p.numel() for p in model.parameters() if p.requires_grad)))
-
     optimizer = optim.Adam([p for p in model.parameters() if p.requires_grad],
                            lr=hparams.initial_learning_rate)
 
@@ -364,11 +366,14 @@ if __name__ == "__main__":
         
     load_checkpoint(args.syncnet_checkpoint_path, syncnet, None, reset_optimizer=True, overwrite_global_states=False)
 
+    kan_model = Wav2LipKan()
+    kan_model.wavlip = model
+
     if not os.path.exists(checkpoint_dir):
         os.mkdir(checkpoint_dir)
 
     # Train!
-    train(device, model, train_data_loader, test_data_loader, optimizer,
+    train(device, kan_model, train_data_loader, test_data_loader, optimizer,
               checkpoint_dir=checkpoint_dir,
               checkpoint_interval=hparams.checkpoint_interval,
               nepochs=hparams.nepochs)

@@ -6,7 +6,7 @@ from torch.nn import functional as F
 import math
 
 from .conv import Conv2dTranspose, Conv2d, nonorm_Conv2d
-from kan import *
+from ..kan import *
 
 import argparse
 parser = argparse.ArgumentParser(description='Code to train the expert lip-sync discriminator')

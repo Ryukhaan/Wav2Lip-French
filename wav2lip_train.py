@@ -31,7 +31,6 @@ parser.add_argument('--checkpoint_kan_path', help='Resume KAN from this checkpoi
 
 args = parser.parse_args()
 
-
 global_step = 0
 global_epoch = 0
 use_cuda = torch.cuda.is_available()
@@ -371,7 +370,7 @@ if __name__ == "__main__":
     kan_model.wavlip = model
     if not os.path.exists(checkpoint_dir):
         os.mkdir(checkpoint_dir)
-    for p in model.wavlip.parameters():
+    for p in kan_model.wavlip.parameters():
         p.requires_grad = False
     optimizer = optim.Adam([p for p in model.parameters() if p.requires_grad],
                            lr=hparams.initial_learning_rate)

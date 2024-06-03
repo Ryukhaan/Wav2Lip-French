@@ -1,10 +1,69 @@
+import os
+
 import torch
 from torch import nn
 from torch.nn import functional as F
 import math
 
 from .conv import Conv2dTranspose, Conv2d, nonorm_Conv2d
+from kan import *
 
+import argparse
+parser = argparse.ArgumentParser(description='Code to train the expert lip-sync discriminator')
+parser.add_argument("--path", help="Root folder of the preprocessed dataset", required=True)
+parser.add_argument('--new_path', help='Save checkpoints to this directory', required=True, type=str)
+args = parser.parse_args()
+path = args.path
+new_path = args.new_path
+
+class Wav2LipKan(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.wavlip = Wav2Lip()
+        self.kan = KAN([1024, 2, 1024], grid=5, k=3, base_fun=nn.GELU())
+
+    def forward(self, audio_sequences, face_sequences):
+        # audio_sequences = (B, T, 1, 80, 16)
+        B = audio_sequences.size(0)
+
+        input_dim_size = len(face_sequences.size())
+        if input_dim_size > 4:
+            audio_sequences = torch.cat([audio_sequences[:, i] for i in range(audio_sequences.size(1))], dim=0)
+            face_sequences = torch.cat([face_sequences[:, :, i] for i in range(face_sequences.size(2))], dim=0)
+
+        audio_embedding = self.wavlip.audio_encoder(audio_sequences)  # B, 512, 1, 1
+
+        feats = []
+        x = face_sequences
+        for f in self.wavlip.face_encoder_blocks:
+            x = f(x)
+            feats.append(x)
+
+        x = audio_embedding
+        for i, f in enumerate(self.face_decoder_blocks):
+            x = f(x)
+            try:
+                x = torch.cat((x, feats[-1]), dim=1)
+                # Changes
+                if i == 0:
+                    x = self.kan(x)
+            except Exception as e:
+                print(x.size())
+                print(feats[-1].size())
+                raise e
+
+            feats.pop()
+
+        x = self.output_block(x)
+
+        if input_dim_size > 4:
+            x = torch.split(x, B, dim=0)  # [(B, C, H, W)]
+            outputs = torch.stack(x, dim=2)  # (B, C, T, H, W)
+
+        else:
+            outputs = x
+
+        return outputs
 class Wav2Lip(nn.Module):
     def __init__(self):
         super(Wav2Lip, self).__init__()
@@ -83,6 +142,22 @@ class Wav2Lip(nn.Module):
         self.output_block = nn.Sequential(Conv2d(80, 32, kernel_size=3, stride=1, padding=1),
             nn.Conv2d(32, 3, kernel_size=1, stride=1, padding=0),
             nn.Sigmoid()) 
+
+    def face_encode(self, face_sequences):
+        # audio_sequences = (B, T, 1, 80, 16)
+        input_dim_size = len(face_sequences.size())
+        if input_dim_size > 4:
+            face_sequences = torch.cat([face_sequences[:, :, i] for i in range(face_sequences.size(2))], dim=0)
+        feats = []
+        x = face_sequences
+        return self.face_encoder_blocks(x)
+
+    def audio_encode(self, audio_sequences):
+        # audio_sequences = (B, T, 1, 80, 16)
+        input_dim_size = len(audio_sequences.size())
+        if input_dim_size > 4:
+            audio_sequences = torch.cat([audio_sequences[:, i] for i in range(audio_sequences.size(1))], dim=0)
+        return self.audio_encoder(audio_sequences)  # B, 512, 1, 1
 
     def forward(self, audio_sequences, face_sequences):
         # audio_sequences = (B, T, 1, 80, 16)

@@ -44,6 +44,7 @@ class Wav2LipKan(nn.Module):
                 x = torch.cat((x, feats[-1]), dim=1)
                 # Changes
                 if i == 0:
+                    print(x.shape)
                     x = self.kan(x)
             except Exception as e:
                 print(x.size())

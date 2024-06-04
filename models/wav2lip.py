@@ -14,7 +14,11 @@ class Wav2LipKan(nn.Module):
     def __init__(self):
         super().__init__()
         self.wavlip = Wav2Lip()
-        self.kan = KAN([1024, 2, 1024], grid=5, k=3, base_fun=nn.GELU())
+        self.kan = nn.Sequential(
+            KANLayer(1024, 2),
+            KANLayer(2, 1024)
+        )
+            #KAN([1024, 2, 1024], grid=5, k=3, base_fun=nn.GELU())
 
     def forward(self, audio_sequences, face_sequences):
         # audio_sequences = (B, T, 1, 80, 16)

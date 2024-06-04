@@ -4,17 +4,12 @@ import os
 def get_image_list(data_root, split):
 	filelist = []
 
-	#with open('filelists/{}.txt'.format(split)) as f:
-	#	for line in f:
-	#		line = line.strip()
-	#		if ' ' in line: line = line.split()[0]
-	#		filelist.append(os.path.join(data_root, line))
+	with open('filelists/{}.txt'.format(split)) as f:
+		for line in f:
+			line = line.strip()
+			if ' ' in line: line = line.split()[0]
+			filelist.append(os.path.join(data_root, line))
 
-	directory = os.path.join("/home/Rdecelle/data/", data_root)
-	for dir in os.listdir(directory):
-		for subdir in os.listdir(os.path.join(directory, dir)):
-			filelist.append(os.path.join(data_root, dir, subdir))
-	print(filelist)
 	return filelist
 
 def get_image_list_from_directory(data_root):

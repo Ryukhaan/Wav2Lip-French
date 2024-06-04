@@ -150,7 +150,8 @@ class Dataset(object):
                 continue
 
             indiv_mels = self.get_segmented_mels(orig_mel.copy(), img_name)
-            if indiv_mels is None: continue
+            if indiv_mels is None:
+                continue
 
             window = self.prepare_window(window)
             y = window.copy()

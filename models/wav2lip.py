@@ -51,6 +51,7 @@ class Wav2LipKan(nn.Module):
                 raise e
             if i == 0:
                 x = x.squeeze()
+                print(x.shape)
                 x = self.kan(x)
                 x = x.unsqueeze(2).unsqueeze(3)
                 print(x.shape)

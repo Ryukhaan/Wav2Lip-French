@@ -45,6 +45,7 @@ class Wav2LipKan(nn.Module):
                 # Changes
                 if i == 0:
                     x = x.view(-1, 1024)
+                    print(x.shape)
                     x = self.kan(x)
                     x = x.view(-1, 1024, 1, 1)
             except Exception as e:

@@ -38,7 +38,7 @@ class Wav2LipKan(nn.Module):
             feats.append(x)
 
         x = audio_embedding
-        for i, f in enumerate(self.face_decoder_blocks):
+        for i, f in enumerate(self.wavlip.face_decoder_blocks):
             x = f(x)
             try:
                 x = torch.cat((x, feats[-1]), dim=1)

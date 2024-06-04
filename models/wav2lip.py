@@ -53,6 +53,7 @@ class Wav2LipKan(nn.Module):
                 x = x.squeeze()
                 x = self.kan(x)
                 x = x.unsqueeze(2).unsqueeze(3)
+                print(x.shape)
             feats.pop()
 
         x = self.wavlip.output_block(x)

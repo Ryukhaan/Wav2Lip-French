@@ -14,10 +14,8 @@ class Wav2LipKan(nn.Module):
     def __init__(self, device):
         super().__init__()
         self.wavlip = Wav2Lip()
-        self.kan = nn.Sequential(
-            KANLayer(1024, 2, device=device),
-            KANLayer(2, 512, device=device)
-        )
+        self.kan_red = KANLayer(1024, 2, device=device)
+        self.kan_exp = KANLayer(2, 512, device=device)
             #KAN([1024, 2, 1024], grid=5, k=3, base_fun=nn.GELU())
 
     def forward(self, audio_sequences, face_sequences):
@@ -48,7 +46,8 @@ class Wav2LipKan(nn.Module):
                 raise e
             if i == 0:
                 x = x.squeeze()
-                x, preacts, postacts, postspline = self.kan(x)
+                x, _, _, _ = self.kan_red(x)
+                x, _, _, _ = self.kan_exp(x)
                 x = x.unsqueeze(2).unsqueeze(3)
             feats.pop()
 

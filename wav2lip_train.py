@@ -366,7 +366,7 @@ if __name__ == "__main__":
     load_checkpoint(args.syncnet_checkpoint_path, syncnet, None, reset_optimizer=True, overwrite_global_states=False)
 
     # KAN MODEL
-    kan_model = Wav2LipKan()
+    kan_model = Wav2LipKan(device)
     kan_model.wavlip = model
     if not os.path.exists(checkpoint_dir):
         os.mkdir(checkpoint_dir)

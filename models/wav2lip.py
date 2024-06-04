@@ -11,12 +11,12 @@ sys.path.append('pykan')
 from kan import *
 
 class Wav2LipKan(nn.Module):
-    def __init__(self):
+    def __init__(self, device):
         super().__init__()
         self.wavlip = Wav2Lip()
         self.kan = nn.Sequential(
-            KANLayer(1024, 2),
-            KANLayer(2, 1024)
+            KANLayer(1024, 2, device=device),
+            KANLayer(2, 1024, device=device)
         )
             #KAN([1024, 2, 1024], grid=5, k=3, base_fun=nn.GELU())
 

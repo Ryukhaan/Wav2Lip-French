@@ -48,8 +48,9 @@ class Wav2LipKan(nn.Module):
                     print("Shape", x.shape)
                     x = self.kan(x)
                     x = x.view(-1, 512, 1, 1)
+                    print("Out", x.shape)
             except Exception as e:
-                print(x.size())
+                print("Exception", x.size())
                 print(feats[-1].size())
                 raise e
 

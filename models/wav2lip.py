@@ -16,7 +16,7 @@ class Wav2LipKan(nn.Module):
         self.wavlip = Wav2Lip()
         self.kan = nn.Sequential(
             KANLayer(1024, 2, device=device),
-            KANLayer(2, 1024, device=device)
+            KANLayer(2, 512, device=device)
         )
             #KAN([1024, 2, 1024], grid=5, k=3, base_fun=nn.GELU())
 
@@ -47,7 +47,7 @@ class Wav2LipKan(nn.Module):
                     x = x.view(-1, 1024)
                     print("Shape", x.shape)
                     x = self.kan(x)
-                    x = x.view(-1, 1024, 1, 1)
+                    x = x.view(-1, 512, 1, 1)
             except Exception as e:
                 print(x.size())
                 print(feats[-1].size())

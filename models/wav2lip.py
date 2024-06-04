@@ -39,10 +39,7 @@ class Wav2LipKan(nn.Module):
 
         x = audio_embedding
         for i, f in enumerate(self.wavlip.face_decoder_blocks):
-            print("Input", x.shape)
             x = f(x)
-            print("Out", x.shape)
-            print("Feats", feats[-1].shape)
             try:
                 x = torch.cat((x, feats[-1]), dim=1)
             except Exception as e:
@@ -51,10 +48,8 @@ class Wav2LipKan(nn.Module):
                 raise e
             if i == 0:
                 x = x.squeeze()
-                print(x.shape)
-                x = self.kan(x)
+                x, preacts, postacts, postspline = self.kan(x)
                 x = x.unsqueeze(2).unsqueeze(3)
-                print(x.shape)
             feats.pop()
 
         x = self.wavlip.output_block(x)

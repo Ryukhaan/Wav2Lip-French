@@ -39,6 +39,7 @@ class Wav2LipKan(nn.Module):
 
         x = audio_embedding
         for i, f in enumerate(self.wavlip.face_decoder_blocks):
+            print("Input", x.shape)
             x = f(x)
             try:
                 print(x.shape, feats[-1].shape)

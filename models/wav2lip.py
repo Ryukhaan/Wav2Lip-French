@@ -41,14 +41,16 @@ class Wav2LipKan(nn.Module):
         for i, f in enumerate(self.wavlip.face_decoder_blocks):
             x = f(x)
             try:
+                print(x.shape, feats[-1].shape)
                 x = torch.cat((x, feats[-1]), dim=1)
+                print(x.shape)
                 # Changes
-                if i == 0:
-                    x = x.view(-1, 1024)
-                    print("Shape", x.shape)
-                    x = self.kan(x)
-                    x = x.view(-1, 512, 1, 1)
-                    print("Out", x.shape)
+                #if i == 0:
+                #    x = x.view(-1, 1024)
+                #    print("Shape", x.shape)
+                #    x = self.kan(x)
+                #    x = x.view(-1, 512, 1, 1)
+                #    print("Out", x.shape)
             except Exception as e:
                 print("Exception", x.size())
                 print(feats[-1].size())

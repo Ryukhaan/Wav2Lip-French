@@ -15,7 +15,7 @@ class Wav2LipKan(nn.Module):
         super().__init__()
         self.wavlip = Wav2Lip()
         self.kan_red = KANLayer(1024, 2, device=device)
-        self.kan_exp = KANLayer(2, 4608, device=device)
+        self.kan_exp = KANLayer(2, 1024, device=device)
             #KAN([1024, 2, 1024], grid=5, k=3, base_fun=nn.GELU())
 
     def forward(self, audio_sequences, face_sequences):
@@ -42,14 +42,13 @@ class Wav2LipKan(nn.Module):
                 x = torch.cat((x, feats[-1]), dim=1)
                 print(x.shape)
             except Exception as e:
-                print("Exception", x.size())
-                print(feats[-1].size())
+                print("Exception", x.size(), feats[-1].size())
                 raise e
             if i == 0:
                 x = x.squeeze()
                 x, _, _, _ = self.kan_red(x)
                 x, _, _, _ = self.kan_exp(x)
-                x = x.view(-1, 1024, 3, 3)
+                x = x.view(-1, 1024, 1, 1)
 
             feats.pop()
 

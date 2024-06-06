@@ -359,24 +359,24 @@ if __name__ == "__main__":
     model = Wav2Lip().to(device)
     optimizer = optim.Adam([p for p in model.parameters() if p.requires_grad],
                            lr=hparams.initial_learning_rate)
-
+    print('total trainable params {}'.format(sum(p.numel() for p in model.parameters() if p.requires_grad)))
     if args.checkpoint_path is not None:
         load_checkpoint(args.checkpoint_path, model, optimizer, reset_optimizer=False)
         
     load_checkpoint(args.syncnet_checkpoint_path, syncnet, None, reset_optimizer=True, overwrite_global_states=False)
 
     # KAN MODEL
-    kan_model = Wav2LipKan(device)
-    kan_model.wavlip = model
-    if not os.path.exists(checkpoint_dir):
-        os.mkdir(checkpoint_dir)
-    for p in kan_model.wavlip.parameters():
-        p.requires_grad = False
-    optimizer = optim.Adam([p for p in kan_model.parameters() if p.requires_grad],
-                           lr=hparams.initial_learning_rate)
-    print('total trainable params {}'.format(sum(p.numel() for p in kan_model.parameters() if p.requires_grad)))
+    #kan_model = Wav2LipKan(device)
+    #kan_model.wavlip = model
+    #if not os.path.exists(checkpoint_dir):
+    #    os.mkdir(checkpoint_dir)
+    #for p in kan_model.wavlip.parameters():
+    #    p.requires_grad = False
+    #optimizer = optim.Adam([p for p in kan_model.parameters() if p.requires_grad],
+    #                       lr=hparams.initial_learning_rate)
+    #print('total trainable params {}'.format(sum(p.numel() for p in kan_model.parameters() if p.requires_grad)))
     # Train!
-    train(device, kan_model, train_data_loader, test_data_loader, optimizer,
+    train(device, model, train_data_loader, test_data_loader, optimizer,
               checkpoint_dir=checkpoint_dir,
               checkpoint_interval=hparams.checkpoint_interval,
               nepochs=hparams.nepochs)
